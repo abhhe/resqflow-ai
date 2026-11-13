@@ -91,33 +91,39 @@ const AnalyticsDashboard = () => {
   };
 
   return (
-    <div className="flex flex-col h-full space-y-6 overflow-y-auto pr-2 pb-8 scrollbar-thin">
+    <div className="flex flex-col h-full space-y-4 animate-in fade-in duration-500 bg-slate-900 text-slate-100 p-4 rounded-xl border border-slate-800 shadow-xl overflow-y-auto scrollbar-thin">
       
       {/* Editorial Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 animate-in fade-in duration-500">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-3">
         <div>
-          <h1 className="text-2xl font-bold text-text-main tracking-tight mb-2 flex items-center gap-2">
-            <BarChart2 size={24} className="text-info" />
-            System Analytics
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-bold text-[10px] tracking-wider uppercase border border-blue-500/30">
+              Operations Intelligence
+            </span>
+            <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px] tracking-wider uppercase border border-emerald-500/30 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Live Telemetry & Historical DB
+            </span>
+          </div>
+          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            System Analytics <span className="text-sm font-semibold text-slate-400">| Network Performance & Incident Clustering</span>
           </h1>
-          <p className="text-[13px] text-text-secondary max-w-2xl leading-relaxed">
-            Live operational performance metrics and historical trend analysis across the entire network.
-          </p>
         </div>
+
         <div className="flex items-center gap-6">
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">Incidents</span>
-            <span className="text-[14px] font-semibold text-text-main">{incidents.length}</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Live Incidents</span>
+            <span className="text-sm font-mono font-bold text-white">{incidents.length}</span>
           </div>
-          <div className="w-px h-8 bg-border"></div>
+          <div className="w-px h-6 bg-slate-800"></div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">Fleet</span>
-            <span className="text-[14px] font-semibold text-text-main">{ambulances.length} Units</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Fleet Assets</span>
+            <span className="text-sm font-mono font-bold text-cyan-400">{ambulances.length} Units</span>
           </div>
-          <div className="w-px h-8 bg-border"></div>
+          <div className="w-px h-6 bg-slate-800"></div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">Historical DB</span>
-            <span className="text-[14px] font-semibold text-text-main">{dbHistorical.length} Records</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Historical DB</span>
+            <span className="text-sm font-mono font-bold text-emerald-400">{dbHistorical.length} Records</span>
           </div>
         </div>
       </div>
@@ -126,23 +132,23 @@ const AnalyticsDashboard = () => {
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="space-y-6"
+        className="space-y-4"
       >
         {/* KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { label: 'Active Incidents', val: activeIncidents.length, icon: ShieldAlert, color: 'text-warning', sub: `${criticalIncidents.length} critical` },
-            { label: 'Fleet Utilization', val: `${fleetUtil}%`, icon: Truck, color: 'text-info', sub: `${availableAmb.length} standby` },
-            { label: 'Critical Events', val: criticalIncidents.length, icon: Activity, color: 'text-emergency', sub: 'SEV 9+ tracking' },
-            { label: 'Avg Response Time', val: '8:24', icon: Clock, color: 'text-operational', sub: 'Within KPI target' },
+            { label: 'Active Incidents', val: activeIncidents.length, icon: ShieldAlert, color: 'text-amber-400', sub: `${criticalIncidents.length} critical` },
+            { label: 'Fleet Utilization', val: `${fleetUtil}%`, icon: Truck, color: 'text-cyan-400', sub: `${availableAmb.length} standby` },
+            { label: 'Critical Events (SEV 9+)', val: criticalIncidents.length, icon: Activity, color: 'text-rose-400', sub: 'Urgent Dispatch' },
+            { label: 'Avg Response Time', val: '4.8m', icon: Clock, color: 'text-emerald-400', sub: 'Within PS10 Target' },
           ].map(kpi => (
-            <motion.div variants={itemVariants} key={kpi.label} className="bg-bg-surface border border-border p-5 rounded-lg shadow-sm relative overflow-hidden group">
-              <div className="absolute top-4 right-4 text-text-disabled/20 group-hover:text-text-disabled/30 transition-colors">
-                <kpi.icon size={48} strokeWidth={1} />
+            <motion.div variants={itemVariants} key={kpi.label} className="bg-slate-800/80 border border-slate-700 p-4 rounded-xl shadow-lg relative overflow-hidden group">
+              <div className="absolute top-3 right-3 text-slate-700/40 group-hover:text-slate-700/60 transition-colors">
+                <kpi.icon size={44} strokeWidth={1} />
               </div>
-              <p className="text-[10px] text-text-muted uppercase tracking-widest font-bold mb-2 relative z-10">{kpi.label}</p>
-              <h3 className={`text-3xl font-black mb-2 relative z-10 ${kpi.color}`}>{kpi.val}</h3>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary flex items-center gap-1.5 relative z-10">
+              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold mb-1.5 relative z-10">{kpi.label}</p>
+              <h3 className={`text-2xl font-black mb-1.5 relative z-10 ${kpi.color}`}>{kpi.val}</h3>
+              <div className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5 relative z-10">
                 <CheckCircle2 size={12} className={kpi.color} /> {kpi.sub}
               </div>
             </motion.div>
@@ -150,26 +156,26 @@ const AnalyticsDashboard = () => {
         </div>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
           {/* Regional Density */}
-          <motion.div variants={itemVariants} className="bg-bg-surface border border-border rounded-lg shadow-sm overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-border">
-              <h3 className="text-[12px] font-bold text-text-main uppercase tracking-widest">Regional Density</h3>
+          <motion.div variants={itemVariants} className="bg-slate-800/80 border border-slate-700 rounded-xl shadow-lg overflow-hidden flex flex-col">
+            <div className="p-3 border-b border-slate-700 bg-slate-900/60">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">Regional Density & Hotspots</h3>
             </div>
-            <div className="p-5 space-y-4 flex-1">
+            <div className="p-4 space-y-3 flex-1">
               {topRegions.map(([city, count]) => (
-                <div key={city} className="space-y-1.5">
-                  <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider">
-                    <span className="text-text-secondary">{city}</span>
-                    <span className="text-text-main">{count}</span>
+                <div key={city} className="space-y-1">
+                  <div className="flex justify-between items-center text-xs font-semibold">
+                    <span className="text-slate-300">{city}</span>
+                    <span className="font-mono text-cyan-400 font-bold">{count}</span>
                   </div>
-                  <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${(count / maxRegionCount) * 100}%` }}
                       transition={{ duration: 1, ease: "easeOut" }}
-                      className="h-full bg-info rounded-full"
+                      className="h-full bg-cyan-400 rounded-full"
                     />
                   </div>
                 </div>
@@ -178,23 +184,23 @@ const AnalyticsDashboard = () => {
           </motion.div>
 
           {/* Category Distribution */}
-          <motion.div variants={itemVariants} className="bg-bg-surface border border-border rounded-lg shadow-sm overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-border">
-              <h3 className="text-[12px] font-bold text-text-main uppercase tracking-widest">Incident Categories</h3>
+          <motion.div variants={itemVariants} className="bg-slate-800/80 border border-slate-700 rounded-xl shadow-lg overflow-hidden flex flex-col">
+            <div className="p-3 border-b border-slate-700 bg-slate-900/60">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">Incident Categorization</h3>
             </div>
-            <div className="p-5 space-y-4 flex-1">
+            <div className="p-4 space-y-3 flex-1">
               {topCategories.map(([cat, count]) => (
-                <div key={cat} className="space-y-1.5">
-                  <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider">
-                    <span className="text-text-secondary truncate pr-2">{cat}</span>
-                    <span className="text-text-main">{count}</span>
+                <div key={cat} className="space-y-1">
+                  <div className="flex justify-between items-center text-xs font-semibold">
+                    <span className="text-slate-300 truncate pr-2">{cat}</span>
+                    <span className="font-mono text-amber-400 font-bold">{count}</span>
                   </div>
-                  <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${(count / maxCatCount) * 100}%` }}
                       transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-                      className="h-full bg-warning rounded-full"
+                      className="h-full bg-amber-400 rounded-full"
                     />
                   </div>
                 </div>
@@ -203,26 +209,26 @@ const AnalyticsDashboard = () => {
           </motion.div>
 
           {/* Severity + Fleet Status */}
-          <div className="flex flex-col gap-6">
-            <motion.div variants={itemVariants} className="bg-bg-surface border border-border rounded-lg shadow-sm overflow-hidden">
-              <div className="p-4 border-b border-border">
-                <h3 className="text-[12px] font-bold text-text-main uppercase tracking-widest">Severity Distribution</h3>
+          <div className="flex flex-col gap-4">
+            <motion.div variants={itemVariants} className="bg-slate-800/80 border border-slate-700 rounded-xl shadow-lg overflow-hidden">
+              <div className="p-3 border-b border-slate-700 bg-slate-900/60">
+                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Severity Tiers</h3>
               </div>
-              <div className="p-5 space-y-4">
+              <div className="p-4 space-y-3">
                 {[
-                  { label: 'Critical (9-10)', val: sevCounts.CRITICAL, color: 'bg-emergency', textColor: 'text-emergency' },
-                  { label: 'High (7-8)', val: sevCounts.HIGH, color: 'bg-warning', textColor: 'text-warning' },
-                  { label: 'Moderate (<7)', val: sevCounts.MODERATE, color: 'bg-info', textColor: 'text-info' },
+                  { label: 'Critical (SEV 9-10)', val: sevCounts.CRITICAL, color: 'bg-rose-500', textColor: 'text-rose-400' },
+                  { label: 'High (SEV 7-8)', val: sevCounts.HIGH, color: 'bg-amber-500', textColor: 'text-amber-400' },
+                  { label: 'Moderate (SEV <7)', val: sevCounts.MODERATE, color: 'bg-cyan-500', textColor: 'text-cyan-400' },
                 ].map(s => (
-                  <div key={s.label} className="space-y-1.5">
-                    <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider">
+                  <div key={s.label} className="space-y-1">
+                    <div className="flex justify-between items-center text-xs font-semibold">
                       <span className={s.textColor}>{s.label}</span>
-                      <span className="text-text-main">{s.val}</span>
+                      <span className="font-mono text-white font-bold">{s.val}</span>
                     </div>
-                    <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }}
-                        animate={{ width: `${(s.val / incidents.length) * 100}%` }}
+                        animate={{ width: `${(s.val / Math.max(1, incidents.length)) * 100}%` }}
                         transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
                         className={`h-full ${s.color} rounded-full`} 
                       />
@@ -232,20 +238,20 @@ const AnalyticsDashboard = () => {
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="bg-bg-surface border border-border rounded-lg shadow-sm overflow-hidden">
-              <div className="p-4 border-b border-border">
-                <h3 className="text-[12px] font-bold text-text-main uppercase tracking-widest">Fleet Status</h3>
+            <motion.div variants={itemVariants} className="bg-slate-800/80 border border-slate-700 rounded-xl shadow-lg overflow-hidden flex-1">
+              <div className="p-3 border-b border-slate-700 bg-slate-900/60">
+                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Fleet Readiness</h3>
               </div>
-              <div className="p-4 space-y-3">
+              <div className="p-3.5 space-y-2">
                 {Object.entries(ambStatusCounts).map(([status, count]) => (
-                  <div key={status} className="flex justify-between items-center text-[11px] font-bold">
-                    <span className="text-text-muted uppercase tracking-wider">{status.replace('_', ' ')}</span>
+                  <div key={status} className="flex justify-between items-center text-xs font-semibold">
+                    <span className="text-slate-300 uppercase tracking-wider text-[11px]">{status.replace('_', ' ')}</span>
                     <span className={`${
-                      status === 'AVAILABLE' ? 'text-operational bg-operational/10' :
-                      status === 'EN_ROUTE' ? 'text-brand-primary bg-brand-primary/10' :
-                      status === 'ON_SCENE' ? 'text-warning bg-warning/10' :
-                      'text-info bg-info/10'
-                    } px-2 py-0.5 rounded border border-transparent`}>{count}</span>
+                      status === 'AVAILABLE' ? 'text-emerald-400 bg-emerald-500/20 border-emerald-500/30' :
+                      status === 'EN_ROUTE' ? 'text-cyan-400 bg-cyan-500/20 border-cyan-500/30' :
+                      status === 'ON_SCENE' ? 'text-amber-400 bg-amber-500/20 border-amber-500/30' :
+                      'text-slate-400 bg-slate-800 border-slate-700'
+                    } px-2 py-0.5 rounded-full border text-[10px] font-mono font-bold`}>{count}</span>
                   </div>
                 ))}
               </div>
@@ -253,40 +259,39 @@ const AnalyticsDashboard = () => {
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="grid grid-cols-1 gap-6">
-          
-          {/* Event Log */}
-          <motion.div variants={itemVariants} className="bg-bg-surface border border-border rounded-lg shadow-sm overflow-hidden flex flex-col h-64">
-            <div className="p-4 border-b border-border bg-bg-page/50">
-              <h3 className="text-[12px] font-bold text-text-main uppercase tracking-widest">Recent System Events</h3>
-            </div>
-            <div className="flex-1 p-2 space-y-1.5 overflow-y-auto">
-              {incidents.slice(0, 15).map((inc, i) => {
-                const timeStr = inc.timestamp || inc.createdAt;
-                return (
-                  <div key={i} className="px-4 py-3 bg-bg-surface rounded border border-transparent hover:border-border-subtle hover:bg-bg-surface-secondary transition-all flex justify-between items-center group">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-2 h-2 rounded-full ${inc.severity >= 9 ? 'bg-emergency' : 'bg-info'}`} />
-                      <div>
-                        <p className="text-[12px] font-bold text-text-main">{inc.category.replace(/_/g, ' ')}</p>
-                        <p className="text-[10px] text-text-muted uppercase tracking-widest mt-0.5 font-medium flex items-center gap-1.5">
-                          <span>{inc.city}</span>
-                          <span className="w-1 h-1 bg-border rounded-full" />
-                          <span>AI Conf: {(inc.aiConfidence * 100).toFixed(0)}%</span>
-                        </p>
-                      </div>
+        {/* Bottom Section: Recent Events */}
+        <motion.div variants={itemVariants} className="bg-slate-800/80 border border-slate-700 rounded-xl shadow-lg overflow-hidden flex flex-col h-60">
+          <div className="p-3 border-b border-slate-700 bg-slate-900/60 flex justify-between items-center">
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <Activity size={14} className="text-cyan-400" />
+              Recent Autonomous System Events
+            </h3>
+            <span className="text-xs font-mono font-bold text-slate-400">15 Latest Records</span>
+          </div>
+          <div className="flex-1 p-2 space-y-1.5 overflow-y-auto scrollbar-thin">
+            {incidents.slice(0, 15).map((inc, i) => {
+              const timeStr = inc.timestamp || inc.createdAt;
+              return (
+                <div key={i} className="px-3 py-2 bg-slate-900/60 rounded-lg border border-slate-800 hover:border-slate-600 transition-all flex justify-between items-center">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-2 h-2 rounded-full ${inc.severity >= 9 ? 'bg-rose-400 animate-pulse' : 'bg-cyan-400'}`} />
+                    <div>
+                      <p className="text-xs font-bold text-white">{inc.category.replace(/_/g, ' ')}</p>
+                      <p className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-medium flex items-center gap-2">
+                        <span>{inc.city || inc.node}</span>
+                        <span className="w-1 h-1 bg-slate-600 rounded-full" />
+                        <span>AI Match: {((inc.aiConfidence || 0.95) * 100).toFixed(0)}%</span>
+                      </p>
                     </div>
-                    <span className="text-[10px] text-text-muted font-bold uppercase tracking-widest">
-                      {timeStr ? new Date(timeStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
-                    </span>
                   </div>
-                );
-              })}
-            </div>
-          </motion.div>
-          
-        </div>
+                  <span className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider">
+                    {timeStr ? new Date(timeStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
 
       </motion.div>
     </div>

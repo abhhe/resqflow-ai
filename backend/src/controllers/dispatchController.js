@@ -128,8 +128,36 @@ const getActiveDispatches = async (req, res, next) => {
   }
 };
 
+// @desc    Global Multi-Emergency Dispatch Allocation
+// @route   POST /api/dispatch/multi-recommend
+// @access  Private (Dispatcher, Admin)
+const { globalAllocationEngine } = require('../services/globalAllocationEngine');
+const Hospital = require('../models/Hospital');
+
+const recommendMultiDispatch = async (req, res, next) => {
+  try {
+    const unassignedIncidents = await Incident.find({ status: { $in: ['PENDING', 'REPORTED', 'PRIORITIZED'] } });
+    const availableAmbulances = await Ambulance.find({ status: 'AVAILABLE' });
+    const hospitals = await Hospital.find({ status: { $ne: 'OFFLINE' } });
+
+    const result = globalAllocationEngine.allocateActiveEmergencies(
+      unassignedIncidents,
+      availableAmbulances,
+      hospitals
+    );
+
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   recommendDispatch,
+  recommendMultiDispatch,
   assignDispatch,
   getActiveDispatches
 };

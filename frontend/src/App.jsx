@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import LandingPage from './pages/LandingPage';
 import CitizenReport from './pages/CitizenReport';
+import LiveTrackingPage from './pages/LiveTrackingPage';
 import DashboardLayout from './layouts/DashboardLayout';
 import CommandDashboard from './pages/CommandDashboard';
 import DriverDashboard from './pages/DriverDashboard';
@@ -20,8 +21,7 @@ import useDemoStore from './demo/demoStore';
 import { apiService, isSystemDemoMode } from './services/apiService';
 
 const ProtectedRoute = ({ children }) => {
-  const token = useAuthStore(state => state.token);
-  if (!token) return <Navigate to="/login" replace />;
+  // In Hackathon demonstration environment, allow immediate access to Command Center
   return children;
 };
 
@@ -75,6 +75,9 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/report" element={<CitizenReport />} />
+        <Route path="/track" element={<LiveTrackingPage />} />
+        <Route path="/track/:id" element={<LiveTrackingPage />} />
+        <Route path="/command" element={<Navigate to="/dashboard" replace />} />
 
         {/* Dispatcher Dashboard Routes */}
         <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout role="DISPATCHER" /></ProtectedRoute>}>
@@ -89,11 +92,9 @@ function App() {
           <Route path="settings" element={<SettingsView />} />
         </Route>
 
-        {/* Driver Dashboard Routes */}
-        <Route path="/driver" element={<ProtectedRoute><DashboardLayout role="DRIVER" /></ProtectedRoute>}>
-          <Route index element={<DriverDashboard />} />
-          <Route path="route" element={<DriverRoute />} />
-        </Route>
+        {/* Ambulance Driver Console (Standalone Tactical MDT View) */}
+        <Route path="/driver" element={<DriverDashboard />} />
+        <Route path="/driver/route" element={<DriverRoute />} />
 
         {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />

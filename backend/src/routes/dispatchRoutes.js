@@ -1,10 +1,11 @@
 const express = require('express');
-const { recommendDispatch, assignDispatch, getActiveDispatches } = require('../controllers/dispatchController');
+const { recommendDispatch, recommendMultiDispatch, assignDispatch, getActiveDispatches } = require('../controllers/dispatchController');
 const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
 router.post('/recommend', protect, authorize('DISPATCHER', 'ADMIN'), recommendDispatch);
+router.post('/multi-recommend', recommendMultiDispatch);
 router.post('/assign', protect, authorize('DISPATCHER', 'ADMIN'), assignDispatch);
 router.get('/active', getActiveDispatches);
 

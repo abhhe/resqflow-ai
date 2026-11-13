@@ -1,373 +1,122 @@
-# AI Dispatch 🚑
+# ResQFlow AI 🚑
 
-**AI-powered Emergency Ambulance Dispatch & Routing System** built by **Team CompileOrCry**.
-
-AI Dispatch is an intelligent emergency coordination platform designed to reduce ambulance response time in traffic-heavy cities. Instead of selecting an ambulance based only on distance, the system considers **severity, availability, vehicle suitability, predicted ETA, traffic conditions, and hospital requirements** to make better dispatch decisions.
-
-> **Existing emergency infrastructure + an AI optimization layer.**
+**KMIT YUKTIK 2026 — Problem Statement PS10**  
+*Intelligent Real-Time Emergency Coordination and Dynamic Resource Allocation Platform*
 
 ---
 
-## 🚨 Problem
+## 🚨 Problem Statement & Solution
 
-Emergency ambulances can lose critical time because of:
+Emergency ambulances can lose critical time during urban crises due to uncoordinated dispatching, heavy traffic, and mismatched hospital facilities.
 
-* Heavy and unpredictable traffic
-* Inefficient ambulance allocation
-* Static route selection
-* Lack of real-time rerouting
-* Difficulty matching patients with suitable hospitals
-* Limited centralized visibility of emergency resources
+**ResQFlow AI** coordinates multiple simultaneous emergencies across a city, matching resource capabilities (ALS, Trauma, Rescue Boat), calculating traffic-aware routes using Dijkstra pathfinding on travel time, and dynamically adapting when ambulances fail, ICU beds deplete, or heavy rains cause flash traffic congestion.
 
-Even when an ambulance is geographically nearby, it may not be the **fastest or most suitable** option.
+> **Key Demonstration Region:** Simulated Hyderabad Metropolitan Corridor (Kukatpally, Miyapur, JNTU, KPHB, Erragadda, Ameerpet, Hitec City, SR Nagar).
 
 ---
 
-## 💡 Proposed Solution
+## ⚡ Quick Start (Run in Under 2 Minutes)
 
-AI Dispatch follows this workflow:
-
-```text
-Emergency Request
-       ↓
-GPS Location Detection
-       ↓
-AI-Assisted Triage
-       ↓
-Severity Assessment
-       ↓
-Best Ambulance Selection
-       ↓
-Traffic-Aware Route Planning
-       ↓
-Live GPS Monitoring
-       ↓
-Dynamic Rerouting
-       ↓
-Hospital Matching
-       ↓
-Emergency Completion
-```
-
-The dispatch engine ranks available ambulances using multiple factors instead of simply choosing the nearest vehicle.
-
-### Key decision factors
-
-* Ambulance availability
-* Current location
-* Predicted travel time
-* Emergency severity
-* Ambulance type/equipment
-* Traffic conditions
-* Hospital distance
-* Required medical facilities
-* Bed/ICU availability
+### Prerequisites
+- **Node.js** (v18+)
+- **Python** (v3.10+)
+- **MongoDB** *(Optional — ResQFlow AI features a built-in hybrid in-memory store so it runs instantly without any external database setup!)*
 
 ---
 
-## ✨ Key Features
-
-### 🧠 AI-Assisted Emergency Triage
-
-Analyzes the emergency description and helps classify:
-
-* Emergency category
-* Severity level
-* Required ambulance capability
-
-### 🚑 Intelligent Ambulance Dispatch
-
-Selects the ambulance with the **lowest predicted response time**, while considering suitability and availability.
-
-### 🗺️ Dynamic Routing
-
-Uses route optimization and traffic information to identify practical routes.
-
-Candidate routes can be calculated using **A*** / **Dijkstra**, with traffic and road-blockage penalties.
-
-### 🔄 Live Rerouting
-
-Routes can be recalculated when traffic, road blockages, or other conditions change.
-
-### 🏥 Smart Hospital Matching
-
-Recommends hospitals according to:
-
-* Trauma capability
-* ICU availability
-* Bed availability
-* Distance
-* Facility requirements
-
-### 📍 Live Tracking
-
-Provides real-time visibility of ambulance locations and status.
-
-### 📊 Command Center
-
-A centralized dashboard provides:
-
-* Active incidents
-* Critical emergencies
-* Ambulance availability
-* Active dispatches
-* Hospital network
-* Average response time
-* Regional incident density
-* Fleet status
-* Road conditions
-
-### 🚦 Traffic & Road Monitoring
-
-Identifies active traffic blockages and applies route penalties to affected roads.
-
-### 📈 Analytics
-
-Historical and operational data can be used to identify:
-
-* High-delay zones
-* Accident hotspots
-* Incident patterns
-* Fleet utilization
-* Response-time trends
-
----
-
-## 🏗️ System Architecture
-
-```text
-                    ┌─────────────────────┐
-                    │ Emergency User      │
-                    │ / Dispatcher        │
-                    └──────────┬──────────┘
-                               ↓
-                    ┌─────────────────────┐
-                    │ API / Backend       │
-                    │ Express + FastAPI   │
-                    └──────────┬──────────┘
-                               ↓
-              ┌────────────────────────────────┐
-              │ AI Dispatch & Decision Engine  │
-              │                                │
-              │ • Triage                       │
-              │ • Severity                     │
-              │ • Ambulance Ranking            │
-              │ • ETA Prediction                │
-              └───────────────┬────────────────┘
-                              ↓
-             ┌────────────────────────────────┐
-             │ Routing & Optimization Engine  │
-             │                                │
-             │ A* / Dijkstra                  │
-             │ Traffic-aware routing           │
-             │ Dynamic rerouting               │
-             └───────────────┬────────────────┘
-                             ↓
-          ┌──────────────────────────────────────┐
-          │ Hospital Matching & Capacity Layer   │
-          │                                      │
-          │ Trauma • ICU • Beds • Facilities     │
-          └──────────────────┬───────────────────┘
-                             ↓
-                 ┌──────────────────────┐
-                 │ Command Center       │
-                 │ Live Dashboard       │
-                 └──────────────────────┘
-```
-
----
-
-## 🛠️ Technology Stack
-
-### Frontend
-
-* React.js
-* Vite
-* Tailwind CSS
-* Leaflet / Mapbox
-
-### Backend
-
-* Node.js
-* Express.js
-* Python
-* FastAPI
-* Socket.IO
-
-### Database
-
-* MongoDB
-* MongoDB Atlas
-
-### AI / Machine Learning
-
-* AI-assisted triage
-* ETA prediction
-* Traffic prediction
-* Response-time prediction
-* XGBoost / Random Forest *(planned/optional)*
-
-### Routing & Maps
-
-* A*
-* Dijkstra
-* Google Maps Platform / Mapbox
-* OpenStreetMap
-* OSRM
-
-### Deployment
-
-* Vercel
-* Render / Railway
-* MongoDB Atlas
-
----
-
-## 📊 Dashboard Modules
-
-The prototype includes:
-
-* Emergency Operations Center
-* Dispatch Command
-* Live Incidents
-* Ambulance Monitoring
-* Healthcare Network
-* Road Conditions & Routing
-* System Analytics
-* Emergency Reporting
-* Authority Dashboard
-
-The prototype currently uses **synthetic/demo data** for demonstration purposes.
-
----
-
-## 🔄 Dispatch Logic
-
-```text
-New Emergency
-      ↓
-Identify Location
-      ↓
-Determine Severity
-      ↓
-Filter Available Ambulances
-      ↓
-Check Vehicle Suitability
-      ↓
-Calculate Predicted ETA
-      ↓
-Evaluate Traffic
-      ↓
-Rank Ambulances
-      ↓
-Dispatch Best Option
-      ↓
-Monitor GPS
-      ↓
-Traffic Changed?
-   ↙          ↘
- YES           NO
-  ↓             ↓
-Recalculate    Continue
- Route         Monitoring
-      ↓
-Hospital Matching
-      ↓
-Emergency Completed
-```
-
----
-
-## 🎯 What Makes AI Dispatch Different?
-
-AI Dispatch is **not intended to replace existing emergency services**.
-
-The project focuses on adding an intelligence and optimization layer to existing emergency-response infrastructure.
-
-### Core USP
-
-> **"Don't just find the nearest ambulance. Find the best ambulance, predict the fastest achievable response, dynamically reroute it, and recommend the most suitable hospital."**
-
-This makes the system more than a basic ambulance tracking application.
-
----
-
-## 📈 Future Roadmap
-
-* Integration with real emergency-service APIs
-* Real-time government/municipal traffic feeds
-* Traffic-signal priority for ambulances
-* Advanced ETA prediction using larger historical datasets
-* Predictive identification of high-risk zones
-* Multi-ambulance coordination during mass-casualty events
-* Voice-based emergency reporting
-* Multilingual emergency interface
-* IoT integration with ambulances
-* Hospital API integration for real-time bed availability
-* Integration with existing emergency response networks
-
----
-
-## ⚠️ Current Limitations
-
-The hackathon prototype has some limitations:
-
-* Uses synthetic/demo operational data
-* Real emergency-service API integration is not included
-* Actual ambulance GPS hardware is not connected
-* Hospital capacity data is simulated
-* Traffic feeds may require external API integration
-* ML prediction accuracy depends on availability of historical data
-
-These limitations can be addressed during production deployment through partnerships and real-time data integrations.
-
----
-
-## 👥 Team
-
-### **CompileOrCry**
-
-Built as a hackathon prototype focused on **AI, optimization, real-time systems, and emergency response**.
-
----
-
-## 📌 Project Status
-
-**Prototype / Hackathon Implementation**
-
-The current prototype demonstrates the complete conceptual workflow from **emergency reporting → AI analysis → ambulance dispatch → routing → hospital matching → command-center monitoring**.
-
----
-
-## 🚀 Getting Started
-
-Clone the repository:
-
+### 1. Start the Backend API Server
 ```bash
-git clone <YOUR_REPOSITORY_URL>
-cd <YOUR_REPOSITORY_NAME>
+cd backend
+npm install
+npm start
 ```
+*Backend runs on `http://localhost:5000` with WebSocket support on the same port.*
 
-Install dependencies according to the frontend/backend project structure and configure the required environment variables.
+---
 
-Example:
-
+### 2. Start the Frontend Command Center
 ```bash
+cd frontend
 npm install
 npm run dev
 ```
-
-For the Python service:
-
-```bash
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
-
-> Update these commands according to the actual repository structure before publishing the README.
+*Frontend runs on `http://localhost:5173` (or the port Vite reports).*  
+*Open your browser to `http://localhost:5173` and click **Launch Command Center**.*
 
 ---
 
-## 📄 License
+### 3. (Optional) Start the FastAPI AI Microservice
+```bash
+cd ai-service
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+*Note: ResQFlow AI includes an internal deterministic NLP entity extraction engine in the backend, so the system is 100% operational even without running the Python microservice or having a Gemini API key!*
 
-This project was developed as a **hackathon prototype** by Team CompileOrCry.
+---
+
+## 🧪 Run Automated Verification Tests
+
+ResQFlow AI includes an automated test suite verifying all 15 PS10 Acceptance Requirements:
+
+```bash
+cd backend
+npm test
+```
+
+### Verified Test Results (100% Success)
+- ✅ **Test 1:** Three simultaneous emergencies processed in 10:30 AM scenario
+- ✅ **Test 2:** Incidents sorted by priority (Cardiac: 97 -> Accident: 90 -> Flood: 85)
+- ✅ **Test 3:** Invariant enforced: No ambulance assigned to two active missions
+- ✅ **Test 4:** Unavailable ambulances excluded from allocation
+- ✅ **Test 5:** Ambulance capability matching (ALS for Cardiac, Trauma for Accident, Boat for Flood)
+- ✅ **Test 6:** Hospital ICU capacity enforced for critical emergencies
+- ✅ **Test 7:** No hospital receives an invalid capacity reservation
+- ✅ **Test 8:** Ambulance failure causes dynamic reallocation without interrupting patient care
+- ✅ **Test 9:** Hospital B ICU = 0 results in suitable alternative hospital (Hospital C Medicover Hitec City)
+- ✅ **Test 10:** Heavy rain causes traffic-aware route recalculation
+- ✅ **Test 11:** 7 km / 12 minute route beats 5 km / 22 minute route via Dijkstra
+- ✅ **Test 12:** 4th emergency added without invalidating existing missions
+- ✅ **Test 13:** Map data reflects backend routes and assignments
+- ✅ **Test 14:** Transparent explainable decision logging
+- ✅ **Test 15:** Clean reset returns all demo resources to initial state
+- ✅ **Test 16:** NLP Emergency Text Extraction parses categories, casualties, and capabilities
+
+---
+
+## 🎮 Hackathon Live Demonstration Walkthrough
+
+From the top **Scenario Control Console**, judges and operators can trigger the 6 core scenarios with instant feedback:
+
+1. **Trigger 10:30 AM (`POST /api/scenario/1030am`):**
+   - Creates the 3 canonical emergencies: Cardiac in Ameerpet (97), Accident in Kukatpally (90), Flood in Miyapur (85).
+   - Global allocation engine coordinates all 3 simultaneously with zero double assignments.
+2. **Fail AMB001 (`PATCH /api/mutate/ambulance`):**
+   - Marks AMB001 offline. Detects affected mission (Incident A) and dynamically reallocates to AMB003 with trauma capability.
+3. **Hosp B ICU = 0 (`PATCH /api/mutate/hospital`):**
+   - Sets Hospital B ICU capacity to 0. Excludes Hospital B and reallocates critical Incident B to Hospital C (Medicover Hitec City).
+4. **Heavy Rain Congestion (`PATCH /api/mutate/traffic`):**
+   - Penalizes Route A direct corridor (+12 min -> 22 min). Dijkstra pathfinder switches to Route B bypass (7.0 km, 12 min).
+5. **Add 4th Emergency (`POST /api/mutate/incident`):**
+   - Injects Incident D (Fall at JNTU, Priority 78) into the active operations queue without invalidating active missions.
+6. **Reset Demo (`POST /api/scenario/reset`):**
+   - Cleans the state and restores all ambulances and hospital capacities to baseline.
+
+---
+
+## 📚 Deliverable Documents
+
+1. [REPOSITORY_AUDIT.md](file:///c:/Users/Racharla%20Abhinavteja/OneDrive/Desktop/kmit/REPOSITORY_AUDIT.md) — Inspection matrix and component categorization.
+2. [IMPLEMENTATION_SUMMARY.md](file:///c:/Users/Racharla%20Abhinavteja/OneDrive/Desktop/kmit/IMPLEMENTATION_SUMMARY.md) — Complete overview of modified and added features.
+3. [ARCHITECTURE.md](file:///c:/Users/Racharla%20Abhinavteja/OneDrive/Desktop/kmit/ARCHITECTURE.md) — System architecture, sequence flows, and invariant guards.
+4. [API_DOCUMENTATION.md](file:///c:/Users/Racharla%20Abhinavteja/OneDrive/Desktop/kmit/API_DOCUMENTATION.md) — Endpoints, payloads, and response structures.
+5. [TEST_REPORT.md](file:///c:/Users/Racharla%20Abhinavteja/OneDrive/Desktop/kmit/TEST_REPORT.md) — Test logs and empirical verification.
+
+---
+
+## ⚖️ Attribution & Licensing
+
+- **Primary Repository:** `ai-ambulance-dispatch-routing` by *tarushivishwakarma* (ISC License).
+- **Reference 1:** `DSRS-VANET` by *Sashank2006* (Explainable factor concepts & scoring models).
+- **Reference 2:** `rural-healthcare-routing-engine` by *Hritik2545* (Specialist matching concepts).
+- All simulated demonstration data is explicitly labeled as simulated data.

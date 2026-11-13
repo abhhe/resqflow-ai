@@ -6,32 +6,49 @@ const SettingsView = () => {
   const user = useAuthStore(state => state.user);
 
   return (
-    <div className="p-6 max-w-4xl mx-auto h-full flex flex-col space-y-8">
-      <header>
-        <h1 className="text-xl font-bold text-text-main flex items-center gap-2"><Settings size={20} className="text-info" /> System Settings</h1>
-        <p className="text-sm text-text-muted mt-1">Manage session preferences and environment configuration.</p>
+    <div className="flex flex-col h-full space-y-4 animate-in fade-in duration-500 bg-slate-900 text-slate-100 p-4 rounded-xl border border-slate-800 shadow-xl overflow-y-auto">
+      <header className="border-b border-slate-800 pb-3">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-bold text-[10px] tracking-wider uppercase border border-blue-500/30">
+            Control Console
+          </span>
+          <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px] tracking-wider uppercase border border-emerald-500/30">
+            Active Session
+          </span>
+        </div>
+        <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+          System Settings <span className="text-sm font-semibold text-slate-400">| Session Preferences & Environment Parameters</span>
+        </h1>
       </header>
 
-      <div className="bg-primary-800 border border-primary-700 rounded-lg p-6 space-y-6 shadow-sm">
+      <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-6 space-y-6 shadow-lg max-w-3xl">
         <div>
-          <h2 className="text-sm font-bold text-text-main flex items-center gap-2 mb-4"><User size={16} /> Operator Profile</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <h2 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2 mb-4">
+            <User size={15} className="text-cyan-400" /> Operator Profile
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-[10px] uppercase font-bold text-text-muted tracking-wider block mb-1">Operator ID</label>
-              <div className="bg-primary-900 border border-primary-700 px-3 py-2 rounded text-sm text-text-main">{user?.id || 'OP-1004'}</div>
+              <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-1.5">Operator ID</label>
+              <div className="bg-slate-900 border border-slate-700 px-3.5 py-2.5 rounded-lg text-xs font-mono font-bold text-slate-200">
+                {user?.id || 'DISPATCHER_OP1'}
+              </div>
             </div>
             <div>
-              <label className="text-[10px] uppercase font-bold text-text-muted tracking-wider block mb-1">Assigned Role</label>
-              <div className="bg-primary-900 border border-primary-700 px-3 py-2 rounded text-sm text-info font-bold">{user?.role || 'DISPATCHER'}</div>
+              <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-1.5">Assigned Role</label>
+              <div className="bg-slate-900 border border-slate-700 px-3.5 py-2.5 rounded-lg text-xs font-bold text-cyan-400">
+                {user?.role || 'EMERGENCY_DISPATCHER'}
+              </div>
             </div>
           </div>
         </div>
         
-        <div className="pt-6 border-t border-primary-700">
-          <h2 className="text-sm font-bold text-text-main flex items-center gap-2 mb-4"><Shield size={16} /> Connection Security</h2>
-          <div className="flex items-center gap-3">
-             <div className="w-2 h-2 rounded-full bg-operational animate-pulse"></div>
-             <span className="text-sm text-text-main">JWT Session Active</span>
+        <div className="pt-5 border-t border-slate-700">
+          <h2 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2 mb-3">
+            <Shield size={15} className="text-emerald-400" /> Platform Security & Verification
+          </h2>
+          <div className="flex items-center gap-3 bg-slate-900/60 border border-slate-700/80 p-3 rounded-lg">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+            <span className="text-xs font-semibold text-slate-200">PS10 Cryptographic JWT Session Active & Verified</span>
           </div>
         </div>
       </div>

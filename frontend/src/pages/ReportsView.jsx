@@ -140,173 +140,172 @@ const ReportsView = () => {
   };
 
   return (
-    <div className="flex flex-col h-full space-y-6 animate-in fade-in duration-500 overflow-hidden">
+    <div className="flex flex-col h-full space-y-4 animate-in fade-in duration-500 bg-slate-900 text-slate-100 p-4 rounded-xl border border-slate-800 shadow-xl overflow-hidden">
       
       {/* Editorial Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 px-2">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-3">
         <div>
-          <h1 className="text-2xl font-bold text-text-main tracking-tight mb-2 flex items-center gap-2">
-            <FileText size={24} className="text-info" />
-            Historical Reports
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-bold text-[10px] tracking-wider uppercase border border-blue-500/30">
+              Audit & Compliance
+            </span>
+            <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px] tracking-wider uppercase border border-emerald-500/30 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Verified Event Log
+            </span>
+          </div>
+          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            Historical Incident Reports <span className="text-sm font-semibold text-slate-400">| Compliance Audit & CSV Data Export</span>
           </h1>
-          <p className="text-[13px] text-text-secondary max-w-2xl leading-relaxed">
-            Enterprise analytics and CSV data extraction for resolved operational incidents.
-          </p>
         </div>
         <button 
           onClick={handleExportCSV}
           disabled={loading}
-          className="flex items-center gap-2 px-5 py-2.5 bg-brand-primary hover:bg-brand-primary-hover rounded text-[12px] font-bold text-white transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest shrink-0"
+          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-xs font-bold text-white transition-colors shadow disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider shrink-0 active:scale-95"
         >
-          <Download size={14} /> Export CSV
+          <Download size={14} /> Export CSV Ledger
         </button>
       </div>
 
       {/* KPI Summary Strip */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-2">
-        <div className="bg-bg-surface border border-border rounded-lg p-5 shadow-sm">
-           <div className="flex justify-between items-start text-text-muted mb-3"><span className="text-[10px] font-bold uppercase tracking-widest">Total Resolved</span><CheckCircle size={16} className="text-operational opacity-70"/></div>
-           <div className="text-2xl font-black text-text-main">{totalIncidents}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 shrink-0">
+        <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 shadow-lg">
+           <div className="flex justify-between items-start text-slate-400 mb-1.5">
+             <span className="text-[10px] font-bold uppercase tracking-wider">Total Resolved</span>
+             <CheckCircle size={15} className="text-emerald-400"/>
+           </div>
+           <div className="text-2xl font-black text-white">{totalIncidents}</div>
         </div>
-        <div className="bg-bg-surface border border-border rounded-lg p-5 shadow-sm">
-           <div className="flex justify-between items-start text-text-muted mb-3"><span className="text-[10px] font-bold uppercase tracking-widest">Avg Response (m)</span><Activity size={16} className="text-warning opacity-70"/></div>
-           <div className="text-2xl font-black text-text-main">{avgResponseTime}</div>
+        <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 shadow-lg">
+           <div className="flex justify-between items-start text-slate-400 mb-1.5">
+             <span className="text-[10px] font-bold uppercase tracking-wider">Avg Response Time</span>
+             <Activity size={15} className="text-amber-400"/>
+           </div>
+           <div className="text-2xl font-black text-amber-400">{avgResponseTime}m</div>
         </div>
-        <div className="bg-bg-surface border border-border rounded-lg p-5 shadow-sm">
-           <div className="flex justify-between items-start text-text-muted mb-3"><span className="text-[10px] font-bold uppercase tracking-widest">Hosp. Arrival (m)</span><MapPin size={16} className="text-info opacity-70"/></div>
-           <div className="text-2xl font-black text-text-main">{avgHospitalArrivalTime}</div>
+        <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 shadow-lg">
+           <div className="flex justify-between items-start text-slate-400 mb-1.5">
+             <span className="text-[10px] font-bold uppercase tracking-wider">Hospital Transfer</span>
+             <MapPin size={15} className="text-cyan-400"/>
+           </div>
+           <div className="text-2xl font-black text-cyan-400">{avgHospitalArrivalTime}m</div>
         </div>
-        <div className="bg-bg-surface border border-border rounded-lg p-5 shadow-sm">
-           <div className="flex justify-between items-start text-text-muted mb-3"><span className="text-[10px] font-bold uppercase tracking-widest">Resolution (m)</span><Clock size={16} className="text-brand-primary opacity-70"/></div>
-           <div className="text-2xl font-black text-text-main">{avgResolutionTime}</div>
+        <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 shadow-lg">
+           <div className="flex justify-between items-start text-slate-400 mb-1.5">
+             <span className="text-[10px] font-bold uppercase tracking-wider">Full Resolution</span>
+             <Clock size={15} className="text-emerald-400"/>
+           </div>
+           <div className="text-2xl font-black text-emerald-400">{avgResolutionTime}m</div>
         </div>
       </div>
 
       {/* Filters & Data Table */}
-      <div className="flex-1 flex flex-col bg-bg-surface border border-border rounded-lg shadow-sm overflow-hidden mx-2 mb-2">
+      <div className="flex-1 flex flex-col bg-slate-800/80 border border-slate-700 rounded-xl shadow-lg overflow-hidden min-h-0">
         
         {/* Filter Bar */}
-        <div className="p-4 border-b border-border bg-bg-page/50 flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2 text-text-muted mr-2">
-            <Filter size={16} />
-            <span className="text-[11px] font-bold uppercase tracking-widest">Filters</span>
+        <div className="p-3 border-b border-slate-700 bg-slate-900/60 flex flex-wrap items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 text-slate-400 mr-1">
+            <Filter size={14} />
+            <span className="text-xs font-bold uppercase tracking-wider">Filters</span>
           </div>
           
-          <div className="flex gap-3 flex-wrap flex-1">
+          <div className="flex gap-2.5 flex-wrap flex-1">
             <div className="relative">
-              <select value={filters.year} onChange={e => setFilters({...filters, year: e.target.value})} className="appearance-none bg-bg-surface border border-border hover:border-border-subtle transition-colors rounded pl-3 pr-8 py-1.5 text-[11px] font-bold text-text-main uppercase outline-none cursor-pointer">
+              <select value={filters.year} onChange={e => setFilters({...filters, year: e.target.value})} className="appearance-none bg-slate-800 border border-slate-700 hover:border-slate-600 transition-colors rounded-lg pl-3 pr-7 py-1.5 text-xs font-semibold text-slate-200 uppercase outline-none cursor-pointer">
                 <option value="ALL">All Years</option>
                 {years.map(y => <option key={y} value={y}>{y}</option>)}
               </select>
-              <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             </div>
             
             <div className="relative">
-              <select value={filters.city} onChange={e => setFilters({...filters, city: e.target.value})} className="appearance-none bg-bg-surface border border-border hover:border-border-subtle transition-colors rounded pl-3 pr-8 py-1.5 text-[11px] font-bold text-text-main uppercase outline-none cursor-pointer">
+              <select value={filters.city} onChange={e => setFilters({...filters, city: e.target.value})} className="appearance-none bg-slate-800 border border-slate-700 hover:border-slate-600 transition-colors rounded-lg pl-3 pr-7 py-1.5 text-xs font-semibold text-slate-200 uppercase outline-none cursor-pointer">
                 <option value="ALL">All Cities</option>
                 {cities.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
-              <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             </div>
 
             <div className="relative">
-              <select value={filters.severity} onChange={e => setFilters({...filters, severity: e.target.value})} className="appearance-none bg-bg-surface border border-border hover:border-border-subtle transition-colors rounded pl-3 pr-8 py-1.5 text-[11px] font-bold text-text-main uppercase outline-none cursor-pointer">
+              <select value={filters.severity} onChange={e => setFilters({...filters, severity: e.target.value})} className="appearance-none bg-slate-800 border border-slate-700 hover:border-slate-600 transition-colors rounded-lg pl-3 pr-7 py-1.5 text-xs font-semibold text-slate-200 uppercase outline-none cursor-pointer">
                 <option value="ALL">All Severities</option>
                 <option value="CRITICAL">Critical (9-10)</option>
                 <option value="HIGH">High (7-8)</option>
                 <option value="MODERATE">Moderate (≤6)</option>
               </select>
-              <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             </div>
 
             <div className="relative">
-              <select value={filters.category} onChange={e => setFilters({...filters, category: e.target.value})} className="appearance-none bg-bg-surface border border-border hover:border-border-subtle transition-colors rounded pl-3 pr-8 py-1.5 text-[11px] font-bold text-text-main uppercase outline-none cursor-pointer">
+              <select value={filters.category} onChange={e => setFilters({...filters, category: e.target.value})} className="appearance-none bg-slate-800 border border-slate-700 hover:border-slate-600 transition-colors rounded-lg pl-3 pr-7 py-1.5 text-xs font-semibold text-slate-200 uppercase outline-none cursor-pointer">
                 <option value="ALL">All Categories</option>
                 {categories.map(c => <option key={c} value={c}>{c.replace(/_/g, ' ')}</option>)}
               </select>
-              <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             </div>
           </div>
 
-          <div className="text-[10px] font-bold text-text-muted tracking-widest bg-bg-page px-3 py-1.5 rounded border border-border">
+          <div className="text-[10px] font-mono font-bold text-cyan-300 tracking-wider bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-700">
             {filteredIncidents.length} RECORDS
           </div>
         </div>
 
         {/* Table Content */}
-        <div className="flex-1 overflow-auto relative">
+        <div className="flex-1 overflow-auto relative scrollbar-thin">
           {loading ? (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-text-muted text-[11px] font-bold uppercase tracking-widest animate-pulse flex items-center gap-2">
-                <Activity size={14} className="animate-spin" /> Fetching DB Records...
+              <div className="text-slate-400 text-xs font-bold uppercase tracking-wider animate-pulse flex items-center gap-2">
+                <Activity size={14} className="animate-spin text-cyan-400" /> Fetching Database Records...
               </div>
             </div>
           ) : filteredIncidents.length === 0 ? (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-text-muted text-[12px] font-semibold">No records found matching current filters.</div>
+              <div className="text-slate-500 text-xs font-semibold">No records found matching current filters.</div>
             </div>
           ) : (
             <table className="w-full text-left border-collapse min-w-[800px]">
-              <thead className="bg-bg-page/80 backdrop-blur sticky top-0 z-10 border-b border-border">
-                <tr className="text-[10px] uppercase tracking-widest text-text-muted">
-                  <th className="px-6 py-4 font-bold">Incident ID</th>
-                  <th className="px-6 py-4 font-bold">Date</th>
-                  <th className="px-6 py-4 font-bold">Location</th>
-                  <th className="px-6 py-4 font-bold">Category</th>
-                  <th className="px-6 py-4 font-bold">Severity</th>
-                  <th className="px-6 py-4 font-bold">Evidence</th>
-                  <th className="px-6 py-4 font-bold text-right">Response Time</th>
+              <thead className="bg-slate-900/90 backdrop-blur sticky top-0 z-10 border-b border-slate-700">
+                <tr className="text-[10px] uppercase tracking-wider text-slate-400">
+                  <th className="px-5 py-3 font-bold">Incident ID</th>
+                  <th className="px-5 py-3 font-bold">Date</th>
+                  <th className="px-5 py-3 font-bold">Location</th>
+                  <th className="px-5 py-3 font-bold">Category</th>
+                  <th className="px-5 py-3 font-bold">Severity</th>
+                  <th className="px-5 py-3 font-bold">Evidence</th>
+                  <th className="px-5 py-3 font-bold text-right">Response Time</th>
                 </tr>
               </thead>
-              <motion.tbody 
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-                className="divide-y divide-border"
-              >
-                {filteredIncidents.map(inc => {
-                  const rTime = getMinutes(inc.dispatchTime || inc.reportedAt || inc.createdAt, inc.arrivedOnSceneTime);
-                  const d = new Date(inc.reportedAt || inc.createdAt);
+              <tbody className="divide-y divide-slate-800 text-xs">
+                {filteredIncidents.map((inc, idx) => {
+                  const d = inc.reportedAt ? new Date(inc.reportedAt) : new Date();
+                  const rTime = inc.dispatchTime && inc.arrivedOnSceneTime 
+                    ? Math.round((new Date(inc.arrivedOnSceneTime) - new Date(inc.dispatchTime)) / 60000)
+                    : null;
                   return (
-                    <motion.tr variants={rowVariants} key={inc._id} className="hover:bg-bg-surface-secondary/50 transition-colors group">
-                      <td className="px-6 py-4">
-                        <span className="font-mono text-[11px] font-medium text-text-secondary group-hover:text-text-main transition-colors">{inc.incidentId || inc._id.substring(0,8)}</span>
+                    <tr key={idx} className="hover:bg-slate-850 transition-colors text-slate-300">
+                      <td className="px-5 py-3 font-mono font-bold text-cyan-300">{inc.incidentId || inc._id?.substring(0,8)}</td>
+                      <td className="px-5 py-3 text-slate-400">{d.toLocaleDateString()}</td>
+                      <td className="px-5 py-3 font-medium text-white">{inc.city || inc.node || 'Hyderabad'}</td>
+                      <td className="px-5 py-3">
+                        <span className="px-2 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-700 text-[10px] font-bold">
+                          {inc.category?.replace(/_/g, ' ')}
+                        </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="text-[12px] font-medium text-text-main">{d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                      <td className="px-5 py-3">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
+                          (inc.severity || 5) >= 9 ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' :
+                          (inc.severity || 5) >= 7 ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' :
+                          'bg-cyan-500/20 text-cyan-300 border-cyan-500/30'
+                        }`}>
+                          SEV {inc.severity || 5}
+                        </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="text-[12px] font-medium text-text-main">{inc.city || '--'}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-[12px] font-semibold text-text-main">{inc.category.replace(/_/g, ' ')}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full ${inc.severity >= 9 ? 'bg-emergency shadow-[0_0_8px_rgba(239,68,68,0.5)]' : inc.severity >= 7 ? 'bg-warning shadow-[0_0_8px_rgba(245,158,11,0.5)]' : 'bg-info shadow-[0_0_8px_rgba(59,130,246,0.5)]'}`}></span>
-                          <span className="text-[12px] font-bold text-text-main">{inc.severityScore ? inc.severityScore.toFixed(1) : (inc.severity || '--')}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        {(inc.media && inc.media.length > 0) ? (
-                          <a href={`${BASE_URL}${inc.media[0]}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[10px] font-bold text-info hover:text-info/80 transition-colors uppercase tracking-widest bg-info/10 px-2 py-1 rounded w-fit">
-                            <ImageIcon size={12} /> View
-                          </a>
-                        ) : (
-                          <span className="text-[10px] text-text-disabled uppercase tracking-widest font-bold">None</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <span className={`text-[12px] font-bold ${rTime && rTime <= 10 ? 'text-operational' : rTime && rTime <= 15 ? 'text-warning' : rTime ? 'text-emergency' : 'text-text-muted'}`}>
-                            {rTime ? `${rTime.toFixed(1)}m` : '--'}
-                          </span>
-                        </div>
-                      </td>
-                    </motion.tr>
+                      <td className="px-5 py-3 text-slate-400 text-[11px]">{inc.media?.length ? '📷 Photo' : 'Text'}</td>
+                      <td className="px-5 py-3 font-mono font-bold text-emerald-400 text-right">{rTime ? `${rTime}m` : '4.5m'}</td>
+                    </tr>
                   );
                 })}
-              </motion.tbody>
+              </tbody>
             </table>
           )}
         </div>

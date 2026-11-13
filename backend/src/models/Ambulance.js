@@ -28,6 +28,10 @@ const ambulanceSchema = new mongoose.Schema({
   },
   currentIncident: { type: mongoose.Schema.Types.ObjectId, ref: 'Incident' },
   currentAssignment: { type: String },
+  currentIncidentId: { type: String },
+  node: { type: String },
+  etaMinutes: { type: Number, default: 0 },
+  dataSource: { type: String },
   destination: {
     location: {
       type: { type: String, enum: ['Point'], default: 'Point' },

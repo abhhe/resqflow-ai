@@ -22,7 +22,9 @@ const connectDB = async () => {
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      const conn = await mongoose.connect(uri);
+      const conn = await mongoose.connect(uri, {
+        serverSelectionTimeoutMS: isProduction ? 10000 : 1500
+      });
       console.log(`MongoDB Connected: ${conn.connection.host}`);
       return; // success
     } catch (error) {

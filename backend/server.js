@@ -45,14 +45,14 @@ app.use(express.urlencoded({ extended: true }));
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 1000 // allow seamless rapid hackathon demonstration clicks
 });
 app.use('/api/', limiter);
 
 // Serve uploads folder statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes placeholder
+// Routes
 const authRoutes = require('./src/routes/authRoutes');
 const incidentRoutes = require('./src/routes/incidentRoutes');
 const ambulanceRoutes = require('./src/routes/ambulanceRoutes');
@@ -61,6 +61,10 @@ const routeRoutes = require('./src/routes/routeRoutes');
 const hospitalRoutes = require('./src/routes/hospitalRoutes');
 const analyticsRoutes = require('./src/routes/analyticsRoutes');
 const iotRoutes = require('./src/routes/iotRoutes');
+const scenarioRoutes = require('./src/routes/scenarioRoutes');
+const mutationRoutes = require('./src/routes/mutationRoutes');
+const resqflowRoutes = require('./src/routes/resqflowRoutes');
+const overrideRoutes = require('./src/routes/overrideRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/incidents', incidentRoutes);
@@ -70,6 +74,10 @@ app.use('/api/routes', routeRoutes);
 app.use('/api/hospitals', hospitalRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/iot', iotRoutes);
+app.use('/api/scenario', scenarioRoutes);
+app.use('/api/mutate', mutationRoutes);
+app.use('/api/resqflow', resqflowRoutes);
+app.use('/api/override', overrideRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ success: true, message: 'API is running' });
@@ -113,10 +121,10 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 5000;
 
-// Connect to database BEFORE starting the server
+// Start server immediately and connect to database
 (async () => {
-  await connectDB();
   server.listen(PORT, () => {
     console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   });
+  await connectDB();
 })();

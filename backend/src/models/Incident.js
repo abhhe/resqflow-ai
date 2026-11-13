@@ -5,7 +5,7 @@ const incidentSchema = new mongoose.Schema({
   reportedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   category: { 
     type: String, 
-    enum: ['ROAD_ACCIDENT', 'MEDICAL', 'CARDIAC', 'FIRE', 'TRAUMA', 'FALL', 'STROKE', 'RESPIRATORY', 'INDUSTRIAL', 'ACCIDENT', 'MEDICAL_EMERGENCY', 'FLOOD', 'ROAD_BLOCKAGE', 'FALLEN_TREE', 'BUILDING_COLLAPSE', 'TRAFFIC_HAZARD', 'OTHER'],
+    enum: ['ROAD_ACCIDENT', 'MEDICAL', 'CARDIAC', 'FIRE', 'TRAUMA', 'FALL', 'STROKE', 'RESPIRATORY', 'INDUSTRIAL', 'ACCIDENT', 'MEDICAL_EMERGENCY', 'FLOOD', 'ROAD_BLOCKAGE', 'FALLEN_TREE', 'BUILDING_COLLAPSE', 'TRAFFIC_HAZARD', 'CHEMICAL_LEAK', 'HAZMAT', 'GENERAL_EMERGENCY', 'OTHER'],
     required: true
   },
   description: { type: String },
@@ -17,6 +17,18 @@ const incidentSchema = new mongoose.Schema({
   },
   address: { type: String },
   media: [{ type: String }], // Array of file paths
+  node: { type: String },
+  locationName: { type: String },
+  priorityScore: { type: Number },
+  priority: { type: Number },
+  requiredCapability: { type: String },
+  required_capability: { type: String },
+  severityCategory: { type: String },
+  people_affected: { type: Number },
+  assignedAmbulanceId: { type: String },
+  recommendedHospitalId: { type: String },
+  etaMinutes: { type: Number },
+  routeSummary: { type: String },
   status: {
     type: String,
     enum: ['PENDING', 'REPORTED', 'AI_PROCESSING', 'VERIFIED', 'REJECTED', 'PRIORITIZED', 'ASSIGNED', 'RESPONDING', 'EN_ROUTE', 'ON_SCENE', 'TRANSPORTING', 'AT_HOSPITAL', 'RESOLVED', 'CANCELLED'],

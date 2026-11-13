@@ -1,11 +1,27 @@
 const Incident = require('../models/Incident');
+const { resQFlowStore } = require('../services/resQFlowStore');
+const { computerVisionService } = require('../services/computerVisionService');
 
-// @desc    Create new incident
+// @desc    Create new incident (Full End-to-End Triage & Allocation Pipeline)
 // @route   POST /api/incidents
-// @access  Private
+// @access  Public / Private
 const createIncident = async (req, res, next) => {
   try {
-    const { category, description, latitude, longitude, address, affectedPeople, isMedicalEmergency } = req.body;
+    const { 
+      category, 
+      description, 
+      latitude, 
+      longitude, 
+      address, 
+      affectedPeople, 
+      isMedicalEmergency,
+      symptoms,
+      hazards,
+      reporterName,
+      reporterPhone,
+      image,
+      imageData
+    } = req.body;
     
     // Process media files if uploaded
     const mediaPaths = [];
@@ -15,62 +31,114 @@ const createIncident = async (req, res, next) => {
       });
     }
 
-    const incidentId = 'INC-NEW-' + Math.floor(100000 + Math.random() * 900000);
-    const incident = await Incident.create({
-      incidentId: incidentId,
-      reportedBy: req.user ? req.user._id : undefined, // allow unauth for demo
-      category,
-      description,
-      location: {
-        type: 'Point',
-        coordinates: [parseFloat(longitude), parseFloat(latitude)] // GeoJSON is [lng, lat]
-      },
-      address,
-      media: mediaPaths,
-      affectedPeople: affectedPeople ? parseInt(affectedPeople) : undefined,
-      isMedicalEmergency: isMedicalEmergency === 'true' || isMedicalEmergency === true
-    });
+    const rawImage = image || imageData || (req.files && req.files[0] ? req.files[0].path : null);
+    let visualAssessment = null;
+    let combinedHazards = Array.isArray(hazards) ? [...hazards] : (hazards ? [hazards] : []);
 
-    try {
-      const axios = require('axios');
-      const aiServiceUrl = process.env.AI_SERVICE_URL || 'http://localhost:8000';
-      const aiRes = await axios.post(`${aiServiceUrl}/api/ai/analyze`, {
-        incidentId: incident._id.toString(),
-        description: incident.description,
-        category: incident.category
-      });
-      
-      if (aiRes.data && aiRes.data.success) {
-        const result = aiRes.data.data;
-        const AIAnalysis = require('../models/AIAnalysis');
-        await AIAnalysis.create({
-          incident: incident._id,
-          severityScore: result.recommendedSeverity || incident.severity,
-          confidence: result.confidenceScore || 0.85,
-          recommendedAmbulanceType: result.recommendedAmbulanceType || 'ALS',
-          medicalAssessment: result.reasoning || 'Analysis complete',
-          isGemini: result.isGemini !== false
+    if (rawImage) {
+      try {
+        visualAssessment = await computerVisionService.analyzeEmergencyImage(rawImage, {
+          category: category || 'GENERAL_EMERGENCY',
+          address,
+          description
         });
-        
-        // Update incident with AI fields
-        incident.severity = result.recommendedSeverity || incident.severity;
-        incident.aiConfidence = result.confidenceScore || 0.85;
-        incident.source = result.isGemini === false ? 'DEMO AI' : 'GEMINI AI';
-        await incident.save();
+        if (visualAssessment?.detectedHazards) {
+          visualAssessment.detectedHazards.forEach(h => {
+            if (!combinedHazards.includes(h)) combinedHazards.push(h);
+          });
+        }
+      } catch (cvErr) {
+        console.warn('[INCIDENT CONTROLLER] Computer vision non-blocking skip:', cvErr.message);
       }
-    } catch (aiError) {
-      console.error("AI Analysis failed:", aiError.message);
-      // Fallback to DEMO AI if python server fails completely
-      incident.source = 'DEMO AI';
-      incident.aiConfidence = 0.75;
-      await incident.save();
     }
 
-    // Notify connected clients via Socket.IO
-    req.io.emit('incident:created', incident);
+    const incidentId = 'INC-' + Date.now().toString().slice(-6);
+    const validLat = parseFloat(latitude || 17.4947);
+    const validLng = parseFloat(longitude || 78.4111);
 
-    res.status(201).json({ success: true, data: incident });
+    // 1. Run full end-to-end clinical triage, resource prediction, and Hungarian dispatch
+    const registered = resQFlowStore.registerIncident({
+      incidentId,
+      category: category || 'GENERAL_EMERGENCY',
+      description,
+      address,
+      latitude: validLat,
+      longitude: validLng,
+      location: {
+        type: 'Point',
+        coordinates: [validLng, validLat]
+      },
+      affectedPeople: affectedPeople ? parseInt(affectedPeople, 10) : 1,
+      isMedicalEmergency: isMedicalEmergency === 'true' || isMedicalEmergency === true,
+      symptoms,
+      hazards: combinedHazards,
+      visualAssessment
+    });
+
+    const enriched = registered.incident;
+
+    // 2. Persist to MongoDB (with safe in-memory fallback if DB is unseeded)
+    let mongoIncident = null;
+    try {
+      mongoIncident = await Incident.create({
+        incidentId,
+        reportedBy: req.user ? req.user._id : undefined,
+        category: enriched.category,
+        description: enriched.description,
+        location: {
+          type: 'Point',
+          coordinates: [validLng, validLat]
+        },
+        address: enriched.address,
+        node: enriched.node,
+        locationName: enriched.locationName,
+        media: mediaPaths,
+        affectedPeople: enriched.affectedPeople,
+        people_affected: enriched.affectedPeople,
+        isMedicalEmergency: enriched.isMedicalEmergency || false,
+        priorityScore: enriched.priorityScore,
+        priority: enriched.priorityScore,
+        severityCategory: enriched.severityCategory,
+        requiredCapability: enriched.requiredCapability,
+        required_capability: enriched.requiredCapability,
+        assignedAmbulanceId: enriched.assignedAmbulanceId,
+        recommendedHospitalId: enriched.recommendedHospitalId,
+        etaMinutes: enriched.etaMinutes,
+        routeSummary: enriched.routeSummary,
+        status: enriched.status,
+        severity: Math.round(enriched.priorityScore / 10),
+        severityScore: enriched.priorityScore,
+        aiConfidence: enriched.severityAssessment?.confidenceScore || 0.9,
+        aiAnalysis: enriched.severityAssessment
+      });
+    } catch (dbErr) {
+      console.warn('MongoDB sync notice (in-memory active):', dbErr.message);
+    }
+
+    const responsePayload = mongoIncident ? { ...mongoIncident.toObject(), ...enriched } : enriched;
+
+    // 3. Broadcast real-time Socket.IO notifications to central Command Center
+    if (req.io) {
+      req.io.emit('scenario:update', {
+        event: 'LIVE_INCIDENT_REPORTED',
+        incident: responsePayload,
+        allocation: registered.allocation,
+        state: registered.state
+      });
+      req.io.emit('incident:created', responsePayload);
+    }
+
+    return res.status(201).json({ 
+      success: true, 
+      message: enriched.status === 'ASSIGNED'
+        ? `Emergency dispatched: ${enriched.assignedAmbulanceId || enriched.assignedPrimaryUnit || 'Emergency Squad'} assigned with ${enriched.etaMinutes || 6}m ETA.`
+        : 'Emergency placed in priority queue. Fleet units currently saturated.',
+      data: responsePayload,
+      allocation: registered.allocation,
+      state: registered.state
+    });
   } catch (error) {
+    console.error('Error creating incident:', error);
     next(error);
   }
 };
@@ -109,32 +177,58 @@ const getIncidentById = async (req, res, next) => {
   }
 };
 
-// @desc    Update incident status
+// @desc    Update incident status (Full Lifecycle State Machine)
 // @route   PATCH /api/incidents/:id/status
-// @access  Private
+// @access  Public / Private
 const updateIncidentStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
+    const incId = req.params.id;
     
+    // 1. Update in-memory resQFlowStore state
+    let updatedStoreState = null;
+    try {
+      updatedStoreState = resQFlowStore.updateIncidentStatus(incId, status);
+    } catch (storeErr) {
+      console.warn('Store update warning:', storeErr.message);
+    }
+
+    // 2. Update MongoDB record if it exists
     const updateData = { status };
     if (status === 'RESOLVED') {
       updateData.resolvedAt = Date.now();
     }
 
-    const incident = await Incident.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true, runValidators: true }
-    );
-    
-    if (!incident) {
-      return res.status(404).json({ success: false, message: 'Incident not found' });
+    let incident = null;
+    try {
+      incident = await Incident.findOneAndUpdate(
+        { $or: [{ _id: incId }, { incidentId: incId }] },
+        updateData,
+        { new: true, runValidators: true }
+      );
+    } catch (dbErr) {
+      console.warn('DB update notice:', dbErr.message);
     }
     
-    // Broadcast status change
-    req.io.emit('incident:status', incident);
+    // 3. Broadcast status change across Socket.IO
+    if (req.io) {
+      req.io.emit('incident:status', incident || { _id: incId, incidentId: incId, status });
+      if (updatedStoreState) {
+        req.io.emit('scenario:update', {
+          event: 'INCIDENT_STATUS_UPDATED',
+          incidentId: incId,
+          status,
+          state: updatedStoreState
+        });
+      }
+    }
     
-    res.json({ success: true, data: incident });
+    return res.json({ 
+      success: true, 
+      message: `Incident ${incId} transitioned to ${status}.`,
+      data: incident || { incidentId: incId, status },
+      state: updatedStoreState
+    });
   } catch (error) {
     next(error);
   }
